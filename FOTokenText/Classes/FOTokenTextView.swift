@@ -29,38 +29,49 @@ public class FOTokenTextView: UITextView {
     func doReturn() {
         addToken(text)
         text = nil
-        
-        setNeedsLayout()
-        setNeedsDisplay()
     }
     
     func doDelete() {
         if let token = tokens.last {
-            removeToken(token)
+            if token.selected {
+                removeToken(token)
+            } else  {
+                token.selected = true
+            }
         }
-        
-        setNeedsLayout()
-        setNeedsDisplay()
     }
     
-    func addToken(text: String) {
+    func addToken(text: String, animated: Bool = false) {
         let token = newToken(text)
         tokens.append(token)
         addSubview(token)
+        
+        setNeedsLayout()
+        setNeedsDisplay()
+        UIView.animateWithDuration(animated ? 0.3 : 0) {
+            self.layoutIfNeeded()
+        }
     }
     
     func newToken(text: String) -> FOTokenButton {
         let token = FOTokenButton(type: .System)
         token.setTitle(text, forState: .Normal)
         token.titleLabel?.font = font
+        token.textView = self
         
         return token
     }
     
-    func removeToken(token: FOTokenButton) {
+    func removeToken(token: FOTokenButton, animated: Bool = true) {
         if let index = tokens.indexOf(token) {
             token.removeFromSuperview()
             tokens.removeAtIndex(index)
+            
+            setNeedsLayout()
+            setNeedsDisplay()
+            UIView.animateWithDuration(animated ? 0.3 : 0) {
+                self.layoutIfNeeded()
+            }
         }
     }
     
@@ -182,6 +193,14 @@ public class FOTokenTextView: UITextView {
         return rect
     }
     
+    func clearSelectedToken() {
+        for token in tokens {
+            if token.selected {
+                token.selected = false
+            }
+        }
+    }
+    
 }
 
 extension FOTokenTextView: UITextViewDelegate {
@@ -193,11 +212,13 @@ extension FOTokenTextView: UITextViewDelegate {
             return false
         }
         
-        if text.characters.count == 0 {
+        if text.characters.count == 0 && textView.text.characters.count == 0 {
             doDelete()
             
             return false
         }
+        
+        clearSelectedToken()
         
         return true
     }
@@ -220,17 +241,60 @@ extension FOTokenTextView: NSLayoutManagerDelegate {
 
 class FOTokenButton: UIButton {
     
+    weak var textView: FOTokenTextView? = nil
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        layer.cornerRadius = 5
+        layer.cornerRadius = 10
         layer.borderWidth = 2
         layer.borderColor = UIColor.orangeColor().CGColor
+        layer.masksToBounds = true
+        
         setTitleColor(UIColor.brownColor(), forState: .Normal)
+        
+        setBackgroundImage(UIImage(color: UIColor.lightGrayColor()), forState: .Normal)
+        setBackgroundImage(UIImage(color: UIColor.blueColor()), forState: .Selected)
+        setBackgroundImage(UIImage(color: UIColor.blueColor()), forState: [.Selected, .Highlighted])
+        
+        contentEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
+        
+        addTarget(self, action: #selector(touchUpInside), forControlEvents: .TouchUpInside)
+    }
+    
+    func touchUpInside() {
+        if selected {
+            textView?.removeToken(self)
+        } else {
+            textView?.clearSelectedToken()
+            selected = true
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+
+extension UIImage {
+    
+    convenience init(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
+        UIGraphicsBeginImageContext(size)
+        
+        let rect = CGRect(origin: CGPointZero, size: size)
+        let c = UIGraphicsGetCurrentContext()
+        
+        CGContextSetFillColorWithColor(c, color.CGColor)
+        CGContextFillRect(c, rect)
+        
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+
+        if let i = image.CGImage {
+            self.init(CGImage: i)
+        } else {
+            self.init()
+        }
     }
     
 }
