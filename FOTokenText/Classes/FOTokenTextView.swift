@@ -12,6 +12,7 @@ public class FOTokenTextView: UITextView {
     
     var tokens = [FOTokenButton]()
     var tokenSize = CGSizeZero
+    var tokenEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -78,20 +79,23 @@ public class FOTokenTextView: UITextView {
     }
     
     func layoutTokens() {
-        var p = CGPointZero
+        var p = CGPoint(x: 0, y: tokenEdgeInsets.top)
         
-        for token in tokens {
+        for (index, token) in tokens.enumerate() {
             var s = token.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
             
-            if p.x + s.width >= frame.width && p != CGPointZero {
+            // New line
+            if p.x + s.width + tokenEdgeInsets.left + tokenEdgeInsets.right >= frame.width && index != 0 {
                 p.x = 0
-                p.y += s.height
+                p.y += s.height + tokenEdgeInsets.top
             }
             
             // Max width
-            if p.x + s.width >= frame.width {
-                s.width = frame.width - p.x
+            if p.x + s.width + tokenEdgeInsets.left + tokenEdgeInsets.right >= frame.width {
+                s.width = frame.width - p.x - tokenEdgeInsets.left - tokenEdgeInsets.right
             }
+            
+            p.x += tokenEdgeInsets.left
             
             token.frame = CGRect(origin: p, size: s)
             
@@ -102,23 +106,24 @@ public class FOTokenTextView: UITextView {
     // Returns an exclusion path and a top inset. Inset is required beacuse of an ongoing bug with full width exclusion paths.
     // https://openradar.appspot.com/15761045
     func tokenExlusion() -> (UIBezierPath, CGFloat) {
-        var tRect = CGRectZero
+        var tRect = CGRect(x: 0, y: 0, width: frame.width, height: tokenEdgeInsets.top)
         var bRect = CGRectZero
         
-        for token in tokens {
-            if bRect == CGRectZero {
+        for (index, token) in tokens.enumerate() {
+            if index == 0 {
                 // First
-                bRect = CGRect(x: 0, y: 0, width: token.frame.maxX, height: token.frame.height)
+                tRect = CGRect(x: 0, y: 0, width: frame.width, height: token.frame.minY)
+                bRect = CGRect(x: 0, y: tokenEdgeInsets.top, width: token.frame.maxX + tokenEdgeInsets.left, height: token.frame.height)
             } else if token.frame.minY != bRect.minY {
                 // New line
                 tRect = CGRect(x: 0, y: 0, width: frame.width, height: token.frame.minY)
-                bRect = CGRect(x: 0, y: token.frame.minY, width: token.frame.maxX, height: token.frame.height)
+                bRect = CGRect(x: 0, y: token.frame.minY, width: token.frame.maxX + tokenEdgeInsets.left, height: token.frame.height)
             } else {
                 // Same line
                 if token.frame.maxX + tokenSize.width >= frame.width {
                     bRect = CGRect(x: 0, y: token.frame.minY, width: frame.width, height: token.frame.height)
                 } else {
-                    bRect = CGRect(x: 0, y: token.frame.minY, width: token.frame.maxX, height: token.frame.height)
+                    bRect = CGRect(x: 0, y: token.frame.minY, width: token.frame.maxX + tokenEdgeInsets.left, height: token.frame.height)
                 }
             }
         }
@@ -147,11 +152,9 @@ public class FOTokenTextView: UITextView {
             inset += max(0, (tokenSize.height - font.lineHeight) / 2.0)
         }
         
-        if bRect.width == frame.width {
+        if bRect.width >= frame.width {
             inset += bRect.height
         }
-        
-        print(inset)
         
         return (path, inset)
     }
