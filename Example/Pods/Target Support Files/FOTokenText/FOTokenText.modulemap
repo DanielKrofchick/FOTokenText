@@ -1,0 +1,6 @@
+framework module FOTokenText {
+  umbrella header "FOTokenText-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -7,18 +7,25 @@
 //
 
 import UIKit
+import FOTokenText
 
 class ViewController: UIViewController {
+    
+    let textView = FOTokenTextView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        textView.layer.borderColor = UIColor.greenColor().CGColor
+        textView.layer.borderWidth = 1
+        view.addSubview(textView)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        textView.frame = CGRect(x: 20, y: 20, width: view.frame.width - 20 * 2, height: view.frame.height - 20 * 2)
     }
-
+    
 }
 
