@@ -179,10 +179,6 @@ public class FOTokenTextView: UITextView {
         path.stroke()
     }
     
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     public override func caretRectForPosition(position: UITextPosition) -> CGRect {
         var rect = super.caretRectForPosition(position)
         
@@ -199,6 +195,19 @@ public class FOTokenTextView: UITextView {
                 token.selected = false
             }
         }
+    }
+    
+    // Disable magnifying glass. Interferes with tokens.
+    public override func addGestureRecognizer(gestureRecognizer: UIGestureRecognizer) {
+        if gestureRecognizer is UILongPressGestureRecognizer {
+            gestureRecognizer.enabled = false
+        }
+        
+        super.addGestureRecognizer(gestureRecognizer)
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
 }
