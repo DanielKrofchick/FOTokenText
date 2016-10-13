@@ -291,15 +291,18 @@ extension UIImage {
     convenience init(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
         UIGraphicsBeginImageContext(size)
         
-        let rect = CGRect(origin: CGPointZero, size: size)
-        let c = UIGraphicsGetCurrentContext()
+        var image: UIImage? = nil
         
-        CGContextSetFillColorWithColor(c, color.CGColor)
-        CGContextFillRect(c, rect)
-        
-        let image = UIGraphicsGetImageFromCurrentImageContext()
+        if let c = UIGraphicsGetCurrentContext() {
+            let rect = CGRect(origin: CGPointZero, size: size)
+            
+            CGContextSetFillColorWithColor(c, color.CGColor)
+            CGContextFillRect(c, rect)
+            
+            image = UIGraphicsGetImageFromCurrentImageContext()
+        }
 
-        if let i = image.CGImage {
+        if let i = image?.CGImage {
             self.init(CGImage: i)
         } else {
             self.init()
