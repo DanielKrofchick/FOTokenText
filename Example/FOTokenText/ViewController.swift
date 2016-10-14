@@ -12,6 +12,7 @@ import FOTokenText
 class ViewController: UIViewController {
     
     let textView = FOTokenTextView()
+    let EI = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,13 +21,26 @@ class ViewController: UIViewController {
         textView.layer.borderWidth = 1
         textView.debug = true
         textView.tokenDelegate = self
+        textView
         view.addSubview(textView)
+        
+        NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: textView, queue: .mainQueue()) {
+            [weak self] note in
+            if let this = self {
+                this.view.setNeedsLayout()
+            }
+        }
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        textView.frame = CGRect(x: 20, y: 20, width: view.frame.width - 20 * 2, height: view.frame.height - 20 * 2)
+        let textW = view.frame.width - EI.left - EI.right
+        let textS = textView.sizeThatFits(CGSize(width: textW, height: CGFloat.max))
+        
+        print(textS)
+        
+        textView.frame = CGRect(x: EI.left, y: EI.top, width: textW, height: textS.height)
     }
     
 }
@@ -34,11 +48,21 @@ class ViewController: UIViewController {
 extension ViewController: FOTokenTextViewProtocol {
     
     func newToken(textView: FOTokenTextView, text: String) -> FOTokenView {
-        let token = FOCustomToken()
+        let token = FOTokenView(type: .System)
         token.setTitle(text, forState: .Normal)
         token.titleLabel?.font = textView.font
         
         return token
+    }
+    
+    func didAdd(token: FOTokenView) {
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
+    }
+    
+    func didRemove(token: FOTokenView) {
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
     }
     
 }

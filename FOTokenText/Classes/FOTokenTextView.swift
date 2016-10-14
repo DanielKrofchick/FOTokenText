@@ -17,7 +17,16 @@ public protocol FOTokenTextViewProtocol {
 public class FOTokenTextView: UITextView {
     
     var tokens = [FOTokenView]()
-    var tokenHeight = CGFloat(0)
+    var _tokenHeight = CGFloat(0)
+    var tokenHeight: CGFloat {
+        get {
+            if _tokenHeight == 0 {
+                _tokenHeight = newToken("").sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max)).height
+            }
+            
+            return _tokenHeight
+        }
+    }
     public var tokenEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
     public var debug = false
     public var tokenDelegate: FOTokenTextViewProtocol? = nil
@@ -103,15 +112,21 @@ public class FOTokenTextView: UITextView {
     public override func layoutSubviews() {
         layoutTokens()
         
-        if tokenHeight == 0 {
-            tokenHeight = newToken("").sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max)).height
-        }
-        
         let (paths, inset) = tokenExlusions()
         textContainer.exclusionPaths = paths
         textContainerInset = UIEdgeInsetsMake(inset, 0, 0, 0)
         
         super.layoutSubviews()
+    }
+    
+    public override func sizeThatFits(size: CGSize) -> CGSize {
+        var s = super.sizeThatFits(size)
+
+        if text.isEmpty {
+            s.height += heightOffset()
+        }
+        
+        return s
     }
     
     func layoutTokens() {
@@ -221,8 +236,8 @@ public class FOTokenTextView: UITextView {
         get {
             var s = super.contentSize
             
-            if let font = font where !text.isEmpty {
-                s.height -= (tokenHeight - font.lineHeight) / 2.0 + font.lineHeight
+            if !text.isEmpty {
+                s.height -= heightOffset()
             }
             
             return s
@@ -230,6 +245,16 @@ public class FOTokenTextView: UITextView {
         set {
             super.contentSize = newValue
         }
+    }
+    
+    func heightOffset() -> CGFloat {
+        var h = CGFloat(0)
+        
+        if let font = font {
+            h = (tokenHeight - font.lineHeight) / 2.0 + font.lineHeight
+        }
+        
+        return h
     }
     
     public override func caretRectForPosition(position: UITextPosition) -> CGRect {
@@ -291,18 +316,16 @@ extension FOTokenTextView: UITextViewDelegate {
         }
     }
     
+    public func scrollViewDidScroll(scrollView: UIScrollView) {
+        scrollView.contentOffset = CGPointZero
+    }
+    
 }
 
 extension FOTokenTextView: NSLayoutManagerDelegate {
     
     public func layoutManager(layoutManager: NSLayoutManager, lineSpacingAfterGlyphAtIndex glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
-        var spacing = CGFloat(0)
-        
-        if let font = font {
-            spacing = (tokenHeight - font.lineHeight) / 2.0 + font.lineHeight
-        }
-        
-        return spacing
+        return heightOffset()
     }
     
 }
