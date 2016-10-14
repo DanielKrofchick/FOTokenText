@@ -51,7 +51,7 @@ public class FOTokenTextView: UITextView {
     func doDelete() {
         if let token = tokens.last {
             if token.selected {
-                removeToken(token)
+                _removeToken(token)
             } else  {
                 token.selected = true
             }
@@ -76,10 +76,18 @@ public class FOTokenTextView: UITextView {
         })
     }
     
+    public func removeToken(identifier: String, animated: Bool) {
+        tokens.filter({$0.identifier == identifier}).forEach({_removeToken($0, animated: animated)})
+    }
+    
     func newToken(text: String) -> FOTokenView {
         if let tokenDelegate = tokenDelegate {
             let token = tokenDelegate.newToken(self, text: text)
             token.textView = self
+            
+            if token.identifier == "" {
+                token.identifier = text
+            }
             
             return token
         } else {
@@ -87,12 +95,13 @@ public class FOTokenTextView: UITextView {
             token.setTitle(text, forState: .Normal)
             token.titleLabel?.font = font
             token.textView = self
+            token.identifier = text
             
             return token
         }
     }
     
-    func removeToken(token: FOTokenView, animated: Bool = true) {
+    func _removeToken(token: FOTokenView, animated: Bool = true) {
         if let index = tokens.indexOf(token) {
             token.removeFromSuperview()
             tokens.removeAtIndex(index)
@@ -333,6 +342,7 @@ extension FOTokenTextView: NSLayoutManagerDelegate {
 public class FOTokenView: UIButton {
     
     public weak var textView: FOTokenTextView? = nil
+    var identifier = ""
     
     public required override init(frame: CGRect) {
         super.init(frame: frame)
@@ -355,7 +365,7 @@ public class FOTokenView: UIButton {
     
     func touchUpInside() {
         if selected {
-            textView?.removeToken(self)
+            textView?._removeToken(self)
         } else {
             textView?.clearSelectedToken()
             selected = true
