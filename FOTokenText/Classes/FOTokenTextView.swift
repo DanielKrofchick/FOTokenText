@@ -58,7 +58,7 @@ public class FOTokenTextView: UITextView {
         }
     }
     
-    func addToken(text: String, animated: Bool = false) {
+    public func addToken(text: String, animated: Bool = false) {
         let token = newToken(text)
         token.alpha = 0
         tokens.append(token)
