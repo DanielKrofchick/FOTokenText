@@ -18,6 +18,7 @@ class ViewController: UIViewController {
         
         textView.layer.borderColor = UIColor.greenColor().CGColor
         textView.layer.borderWidth = 1
+        textView.debug = true
         view.addSubview(textView)
     }
 

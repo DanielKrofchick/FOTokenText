@@ -11,8 +11,9 @@ import Foundation
 public class FOTokenTextView: UITextView {
     
     var tokens = [FOTokenButton]()
-    var tokenSize = CGSizeZero
-    var tokenEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+    var tokenHeight = CGFloat(0)
+    public var tokenEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+    public var debug = false
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -43,14 +44,19 @@ public class FOTokenTextView: UITextView {
     
     func addToken(text: String, animated: Bool = false) {
         let token = newToken(text)
+        token.alpha = 0
         tokens.append(token)
         addSubview(token)
         
         setNeedsLayout()
-        setNeedsDisplay()
-        UIView.animateWithDuration(animated ? 0.3 : 0) {
+        UIView.animateWithDuration(animated ? 0.3 : 0, animations: {
             self.layoutIfNeeded()
-        }
+        }, completion: { (finished) in
+            token.alpha = 1
+            if self.debug {
+                self.setNeedsDisplay()
+            }
+        })
     }
     
     func newToken(text: String) -> FOTokenButton {
@@ -68,22 +74,25 @@ public class FOTokenTextView: UITextView {
             tokens.removeAtIndex(index)
             
             setNeedsLayout()
-            setNeedsDisplay()
-            UIView.animateWithDuration(animated ? 0.3 : 0) {
+            UIView.animateWithDuration(animated ? 0.3 : 0, animations: {
                 self.layoutIfNeeded()
-            }
+            }, completion: { (finished) in
+                if self.debug {
+                    self.setNeedsDisplay()
+                }
+            })
         }
     }
     
     public override func layoutSubviews() {
         layoutTokens()
         
-        if tokenSize == CGSizeZero {
-            tokenSize = newToken("").sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
+        if tokenHeight == 0 {
+            tokenHeight = newToken("").sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max)).height
         }
         
-        let (path, inset) = tokenExlusion()
-        textContainer.exclusionPaths = [path]
+        let (paths, inset) = tokenExlusions()
+        textContainer.exclusionPaths = paths
         textContainerInset = UIEdgeInsetsMake(inset, 0, 0, 0)
         
         super.layoutSubviews()
@@ -116,7 +125,7 @@ public class FOTokenTextView: UITextView {
     
     // Returns an exclusion path and a top inset. Inset is required beacuse of an ongoing bug with full width exclusion paths.
     // https://openradar.appspot.com/15761045
-    func tokenExlusion() -> (UIBezierPath, CGFloat) {
+    func tokenExlusions() -> ([UIBezierPath], CGFloat) {
         var tRect = CGRect(x: 0, y: 0, width: frame.width, height: tokenEdgeInsets.top)
         var bRect = CGRectZero
         
@@ -131,6 +140,8 @@ public class FOTokenTextView: UITextView {
                 bRect = CGRect(x: 0, y: token.frame.minY, width: token.frame.maxX + tokenEdgeInsets.left, height: token.frame.height)
             } else {
                 // Same line
+                let tokenSize = token.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
+                
                 if token.frame.maxX + tokenSize.width >= frame.width {
                     bRect = CGRect(x: 0, y: token.frame.minY, width: frame.width, height: token.frame.height)
                 } else {
@@ -160,23 +171,49 @@ public class FOTokenTextView: UITextView {
         var inset = tRect.maxY
         
         if let font = font {
-            inset += max(0, (tokenSize.height - font.lineHeight) / 2.0)
+            inset += max(0, (tokenHeight - font.lineHeight) / 2.0)
         }
         
         if bRect.width >= frame.width {
             inset += bRect.height
         }
         
-        return (path, inset)
+        return ([path], inset)
     }
     
     public override func drawRect(rect: CGRect) {
         super.drawRect(rect)
         
-        UIColor.blueColor().set()
-        
-        let (path, inset) = tokenExlusion()
-        path.stroke()
+        if debug {
+            UIColor.blueColor().set()
+            
+            let (paths, inset) = tokenExlusions()
+            
+            for path in paths {
+                path.stroke()
+            }
+            
+            if let c = UIGraphicsGetCurrentContext() {
+                let contentRect = CGRect(origin: CGPointZero, size: contentSize)
+                CGContextSetStrokeColorWithColor(c, UIColor.redColor().CGColor)
+                CGContextStrokeRect(c, contentRect)
+            }
+        }
+    }
+    
+    public override var contentSize: CGSize {
+        get {
+            var s = super.contentSize
+            
+            if let font = font where !text.isEmpty {
+                s.height -= (tokenHeight - font.lineHeight) / 2.0 + font.lineHeight
+            }
+            
+            return s
+        }
+        set {
+            super.contentSize = newValue
+        }
     }
     
     public override func caretRectForPosition(position: UITextPosition) -> CGRect {
@@ -232,6 +269,12 @@ extension FOTokenTextView: UITextViewDelegate {
         return true
     }
     
+    public func textViewDidChange(textView: UITextView) {
+        if debug {
+            setNeedsDisplay()
+        }
+    }
+    
 }
 
 extension FOTokenTextView: NSLayoutManagerDelegate {
@@ -240,7 +283,7 @@ extension FOTokenTextView: NSLayoutManagerDelegate {
         var spacing = CGFloat(0)
         
         if let font = font {
-            spacing = (tokenSize.height - font.lineHeight) / 2.0 + font.lineHeight
+            spacing = (tokenHeight - font.lineHeight) / 2.0 + font.lineHeight
         }
         
         return spacing
