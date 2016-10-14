@@ -8,12 +8,19 @@
 
 import Foundation
 
+public protocol FOTokenTextViewProtocol {
+    func newToken(textView: FOTokenTextView, text: String) -> FOTokenView
+    func didRemove(token: FOTokenView)
+    func didAdd(token: FOTokenView)
+}
+
 public class FOTokenTextView: UITextView {
     
-    var tokens = [FOTokenButton]()
+    var tokens = [FOTokenView]()
     var tokenHeight = CGFloat(0)
     public var tokenEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
     public var debug = false
+    public var tokenDelegate: FOTokenTextViewProtocol? = nil
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -53,22 +60,30 @@ public class FOTokenTextView: UITextView {
             self.layoutIfNeeded()
         }, completion: { (finished) in
             token.alpha = 1
+            self.tokenDelegate?.didAdd(token)
             if self.debug {
                 self.setNeedsDisplay()
             }
         })
     }
     
-    func newToken(text: String) -> FOTokenButton {
-        let token = FOTokenButton(type: .System)
-        token.setTitle(text, forState: .Normal)
-        token.titleLabel?.font = font
-        token.textView = self
-        
-        return token
+    func newToken(text: String) -> FOTokenView {
+        if let tokenDelegate = tokenDelegate {
+            let token = tokenDelegate.newToken(self, text: text)
+            token.textView = self
+            
+            return token
+        } else {
+            let token = FOTokenView(type: .System)
+            token.setTitle(text, forState: .Normal)
+            token.titleLabel?.font = font
+            token.textView = self
+            
+            return token
+        }
     }
     
-    func removeToken(token: FOTokenButton, animated: Bool = true) {
+    func removeToken(token: FOTokenView, animated: Bool = true) {
         if let index = tokens.indexOf(token) {
             token.removeFromSuperview()
             tokens.removeAtIndex(index)
@@ -77,6 +92,7 @@ public class FOTokenTextView: UITextView {
             UIView.animateWithDuration(animated ? 0.3 : 0, animations: {
                 self.layoutIfNeeded()
             }, completion: { (finished) in
+                self.tokenDelegate?.didRemove(token)
                 if self.debug {
                     self.setNeedsDisplay()
                 }
@@ -291,11 +307,11 @@ extension FOTokenTextView: NSLayoutManagerDelegate {
     
 }
 
-class FOTokenButton: UIButton {
+public class FOTokenView: UIButton {
     
-    weak var textView: FOTokenTextView? = nil
+    public weak var textView: FOTokenTextView? = nil
     
-    override init(frame: CGRect) {
+    public required override init(frame: CGRect) {
         super.init(frame: frame)
         
         layer.cornerRadius = 10
@@ -323,7 +339,7 @@ class FOTokenButton: UIButton {
         }
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
