@@ -12,6 +12,8 @@ public protocol FOTokenTextViewProtocol {
     func newToken(textView: FOTokenTextView, text: String) -> FOTokenView
     func didRemove(token: FOTokenView)
     func didAdd(token: FOTokenView)
+    func shouldDelete(token: FOTokenView) -> Bool
+    func shouldAddToken(text: String) -> Bool
 }
 
 public class FOTokenTextView: UITextView {
@@ -36,18 +38,14 @@ public class FOTokenTextView: UITextView {
         
         delegate = self
         layoutManager.delegate = self
+        showsVerticalScrollIndicator = false
         
         text = " "
         setNeedsLayout()
         layoutIfNeeded()
         text = ""
     }
-    
-    func doReturn() {
-        addToken(text)
-        text = nil
-    }
-    
+        
     func doDelete() {
         if let token = tokens.last {
             if token.selected {
@@ -65,7 +63,7 @@ public class FOTokenTextView: UITextView {
         addSubview(token)
         
         setNeedsLayout()
-        UIView.animateWithDuration(animated ? 0.3 : 0, animations: {
+        UIView.animateWithDuration(animated ? 0.2 : 0, animations: {
             self.layoutIfNeeded()
         }, completion: { (finished) in
             token.alpha = 1
@@ -107,7 +105,7 @@ public class FOTokenTextView: UITextView {
             tokens.removeAtIndex(index)
             
             setNeedsLayout()
-            UIView.animateWithDuration(animated ? 0.3 : 0, animations: {
+            UIView.animateWithDuration(animated ? 0.2 : 0, animations: {
                 self.layoutIfNeeded()
             }, completion: { (finished) in
                 self.tokenDelegate?.didRemove(token)
@@ -131,9 +129,11 @@ public class FOTokenTextView: UITextView {
     public override func sizeThatFits(size: CGSize) -> CGSize {
         var s = super.sizeThatFits(size)
 
-        if text.isEmpty {
-            s.height += heightOffset()
+        if !text.isEmpty {
+            s.height -= heightOffset()
         }
+        
+        s.height += heightOffset() / 2
         
         return s
     }
@@ -295,110 +295,6 @@ public class FOTokenTextView: UITextView {
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-}
-
-extension FOTokenTextView: UITextViewDelegate {
-    
-    public func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
-        if text == "\n" {
-            doReturn()
-            
-            return false
-        }
-        
-        if text.characters.count == 0 && textView.text.characters.count == 0 {
-            doDelete()
-            
-            return false
-        }
-        
-        clearSelectedToken()
-        
-        return true
-    }
-    
-    public func textViewDidChange(textView: UITextView) {
-        if debug {
-            setNeedsDisplay()
-        }
-    }
-    
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
-        scrollView.contentOffset = CGPointZero
-    }
-    
-}
-
-extension FOTokenTextView: NSLayoutManagerDelegate {
-    
-    public func layoutManager(layoutManager: NSLayoutManager, lineSpacingAfterGlyphAtIndex glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
-        return heightOffset()
-    }
-    
-}
-
-public class FOTokenView: UIButton {
-    
-    public weak var textView: FOTokenTextView? = nil
-    var identifier = ""
-    
-    public required override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        layer.cornerRadius = 10
-        layer.borderWidth = 2
-        layer.borderColor = UIColor.orangeColor().CGColor
-        layer.masksToBounds = true
-        
-        setTitleColor(UIColor.brownColor(), forState: .Normal)
-        
-        setBackgroundImage(UIImage(color: UIColor.lightGrayColor()), forState: .Normal)
-        setBackgroundImage(UIImage(color: UIColor.blueColor()), forState: .Selected)
-        setBackgroundImage(UIImage(color: UIColor.blueColor()), forState: [.Selected, .Highlighted])
-        
-        contentEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
-        
-        addTarget(self, action: #selector(touchUpInside), forControlEvents: .TouchUpInside)
-    }
-    
-    func touchUpInside() {
-        if selected {
-            textView?._removeToken(self)
-        } else {
-            textView?.clearSelectedToken()
-            selected = true
-        }
-    }
-    
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-}
-
-extension UIImage {
-    
-    convenience init(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
-        UIGraphicsBeginImageContext(size)
-        
-        var image: UIImage? = nil
-        
-        if let c = UIGraphicsGetCurrentContext() {
-            let rect = CGRect(origin: CGPointZero, size: size)
-            
-            CGContextSetFillColorWithColor(c, color.CGColor)
-            CGContextFillRect(c, rect)
-            
-            image = UIGraphicsGetImageFromCurrentImageContext()
-        }
-
-        if let i = image?.CGImage {
-            self.init(CGImage: i)
-        } else {
-            self.init()
-        }
     }
     
 }

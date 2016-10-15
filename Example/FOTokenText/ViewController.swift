@@ -21,7 +21,6 @@ class ViewController: UIViewController {
         textView.layer.borderWidth = 1
         textView.debug = true
         textView.tokenDelegate = self
-        textView
         view.addSubview(textView)
         
         NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: textView, queue: .mainQueue()) {
@@ -63,6 +62,14 @@ extension ViewController: FOTokenTextViewProtocol {
     func didRemove(token: FOTokenView) {
         view.setNeedsLayout()
         view.layoutIfNeeded()
+    }
+    
+    func shouldAddToken(text: String) -> Bool {
+        return true
+    }
+    
+    func shouldDelete(token: FOTokenView) -> Bool {
+        return true
     }
     
 }

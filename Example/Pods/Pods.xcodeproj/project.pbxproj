@@ -15,6 +15,8 @@
 		34A1C7E576C58A9D3F3101448308BF3E /* UIImage+Snapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B161931541BFE46DFEA2092EDDDA815 /* UIImage+Snapshot.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		36A644BDA735840A3788C9361A8F0F02 /* Pods-FOTokenText_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E60578F8B0E2FBB20853B4E7E68BFF54 /* Pods-FOTokenText_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		497AA8816FC08215EF4C2431E1986992 /* FBSnapshotTestCase-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 52C18C0EB1FED5EB5CE3B0E768AC510F /* FBSnapshotTestCase-dummy.m */; };
+		4C6D73131DB1F1C700680BC3 /* FOTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6D73111DB1F1AC00680BC3 /* FOTokenView.swift */; };
+		4C6D73161DB1F21200680BC3 /* FOTokenTextView+Delegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6D73141DB1F1E000680BC3 /* FOTokenTextView+Delegates.swift */; };
 		4CA6279C1D37CFF700D19B67 /* FOTokenTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA6279A1D37CFEF00D19B67 /* FOTokenTextView.swift */; };
 		5A50CDA6178C198B8EB39F493CC76948 /* FOTokenText-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = C1E102B4D664FCDC9CBB3DE2502BB8FD /* FOTokenText-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		61EBC5CF0D5E065C88028B49C6B8D3B3 /* UIImage+Diff.h in Headers */ = {isa = PBXBuildFile; fileRef = 85E250EF19C5B5671AEC10BEB508D087 /* UIImage+Diff.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -71,6 +73,8 @@
 		3DBFBDCC891B770A2AC9EF0FB164B751 /* UIImage+Snapshot.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Snapshot.m"; path = "FBSnapshotTestCase/Categories/UIImage+Snapshot.m"; sourceTree = "<group>"; };
 		432938111B6FF0189EFFEDF2F845B308 /* UIImage+Compare.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIImage+Compare.h"; path = "FBSnapshotTestCase/Categories/UIImage+Compare.h"; sourceTree = "<group>"; };
 		46563E2717DFBABB817A16960357A79C /* Pods-FOTokenText_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-FOTokenText_Example.release.xcconfig"; sourceTree = "<group>"; };
+		4C6D73111DB1F1AC00680BC3 /* FOTokenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FOTokenView.swift; sourceTree = "<group>"; };
+		4C6D73141DB1F1E000680BC3 /* FOTokenTextView+Delegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FOTokenTextView+Delegates.swift"; sourceTree = "<group>"; };
 		4CA6279A1D37CFEF00D19B67 /* FOTokenTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FOTokenTextView.swift; sourceTree = "<group>"; };
 		506DF38DD7505291C2F84A2B2FC0F99B /* Pods-FOTokenText_Tests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-FOTokenText_Tests-resources.sh"; sourceTree = "<group>"; };
 		52C18C0EB1FED5EB5CE3B0E768AC510F /* FBSnapshotTestCase-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FBSnapshotTestCase-dummy.m"; sourceTree = "<group>"; };
@@ -282,6 +286,8 @@
 			isa = PBXGroup;
 			children = (
 				4CA6279A1D37CFEF00D19B67 /* FOTokenTextView.swift */,
+				4C6D73141DB1F1E000680BC3 /* FOTokenTextView+Delegates.swift */,
+				4C6D73111DB1F1AC00680BC3 /* FOTokenView.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -524,7 +530,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4CA6279C1D37CFF700D19B67 /* FOTokenTextView.swift in Sources */,
+				4C6D73161DB1F21200680BC3 /* FOTokenTextView+Delegates.swift in Sources */,
 				C70C88B5FDC7553C908512C26153164B /* FOTokenText-dummy.m in Sources */,
+				4C6D73131DB1F1C700680BC3 /* FOTokenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
