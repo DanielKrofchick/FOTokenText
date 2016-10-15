@@ -10,17 +10,31 @@ extension FOTokenTextView: UITextViewDelegate {
     
     public func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
-            if tokenDelegate?.shouldAddToken(self.text) != false {
+            var should = true
+            
+            if let s = tokenDelegate?.shouldAddOnReturn(self.text) {
+                should = s
+            }
+            
+            if should {
                 addToken(self.text)
                 self.text = nil
-                
-                return false
             }
-        } else if text.characters.count == 0 && textView.text.characters.count == 0 {
+            
+            return false
+        }
+        
+        if text.characters.count == 0 && textView.text.characters.count == 0 {
+            var should = true
+            
             if let token = tokens.last {
-                if tokenDelegate?.shouldDelete(token) != false {
-                    doDelete()
+                if let s = tokenDelegate?.shouldRemoveOnDelete(token) {
+                    should = s
                 }
+            }
+            
+            if should {
+                doDelete()
             }
             
             return false

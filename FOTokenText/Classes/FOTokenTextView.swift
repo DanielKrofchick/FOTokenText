@@ -12,8 +12,8 @@ public protocol FOTokenTextViewProtocol {
     func newToken(textView: FOTokenTextView, text: String) -> FOTokenView
     func didRemove(token: FOTokenView)
     func didAdd(token: FOTokenView)
-    func shouldDelete(token: FOTokenView) -> Bool
-    func shouldAddToken(text: String) -> Bool
+    func shouldRemoveOnDelete(token: FOTokenView) -> Bool
+    func shouldAddOnReturn(text: String) -> Bool
 }
 
 public class FOTokenTextView: UITextView {

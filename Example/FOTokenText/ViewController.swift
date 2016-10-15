@@ -64,11 +64,11 @@ extension ViewController: FOTokenTextViewProtocol {
         view.layoutIfNeeded()
     }
     
-    func shouldAddToken(text: String) -> Bool {
+    func shouldAddOnReturn(text: String) -> Bool {
         return true
     }
     
-    func shouldDelete(token: FOTokenView) -> Bool {
+    func shouldRemoveOnDelete(token: FOTokenView) -> Bool {
         return true
     }
     
