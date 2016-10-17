@@ -9,7 +9,7 @@
 public class FOTokenView: UIButton {
     
     public weak var textView: FOTokenTextView? = nil
-    var identifier = ""
+    public var identifier = ""
     
     public required override init(frame: CGRect) {
         super.init(frame: frame)
