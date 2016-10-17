@@ -26,7 +26,7 @@ public class FOTokenTextField: UIView {
         }
     }
     
-    var clearButton: UIButton? = nil
+    public var clearButton: UIButton? = nil
     public var clearEnabled = false {
         didSet {
             if clearEnabled {
