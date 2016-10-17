@@ -27,7 +27,8 @@ class ViewController: UIViewController {
         textView.textView.debug = true
         textView.textView.tokenDelegate = self
         textView.leftView = leftView
-        textView.clearEnabled = true
+        textView.clearButtonMode = .WhileEditing
+        textView.clearButton?.addTarget(self, action: #selector(clearTap), forControlEvents: .TouchUpInside)
         view.addSubview(textView)
         
         NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: textView, queue: .mainQueue()) {
@@ -36,6 +37,11 @@ class ViewController: UIViewController {
                 this.view.setNeedsLayout()
             }
         }
+    }
+    
+    func clearTap() {
+        textView.textView.text = nil
+        textView.setNeedsLayout()
     }
 
     override func viewDidLayoutSubviews() {

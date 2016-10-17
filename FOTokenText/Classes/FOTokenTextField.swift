@@ -27,11 +27,12 @@ public class FOTokenTextField: UIView {
     }
     
     public var clearButton: UIButton? = nil
-    public var clearEnabled = false {
+    public var clearButtonMode: UITextFieldViewMode = .WhileEditing {
         didSet {
-            if clearEnabled {
+            if clearButtonMode == .WhileEditing {
                 clearButton = createClearButton()
                 rightView = clearButton
+                updateClearButton()
             } else {
                 clearButton?.removeFromSuperview()
                 clearButton = nil
@@ -50,7 +51,40 @@ public class FOTokenTextField: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        textView.backgroundColor = UIColor.clearColor()
         addSubview(textView)
+        
+        NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: textView, queue: .mainQueue()) {
+            [weak self] note in
+            self?.updateClearButton()
+        }
+        
+        defer {
+            clearButtonMode = .WhileEditing
+        }
+    }
+    
+    
+    func updateClearButton() {
+        if clearButtonMode == .WhileEditing {
+            clearButton?.hidden = textView.text.isEmpty
+        }
+    }
+    
+    public override func becomeFirstResponder() -> Bool {
+        let r = super.becomeFirstResponder()
+        
+        updateClearButton()
+        
+        return r
+    }
+    
+    public override func resignFirstResponder() -> Bool {
+        let r = super.resignFirstResponder()
+        
+        updateClearButton()
+        
+        return r
     }
     
     public override func layoutSubviews() {
@@ -74,6 +108,7 @@ public class FOTokenTextField: UIView {
         leftView?.frame = CGRect(x: 0, y: max(0, (lineH - leftS.height) / 2), width: leftS.width, height: leftS.height)
         textView.frame = CGRect(x: leftS.width, y: 0, width: textW, height: textS.height)
         rightView?.frame = CGRect(x: frame.width - rightS.width, y: max(0, (lineH - rightS.height) / 2), width: rightS.width, height: rightS.height)
+        updateClearButton()
     }
     
     public override func sizeThatFits(size: CGSize) -> CGSize {
