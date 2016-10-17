@@ -75,9 +75,9 @@
 		432938111B6FF0189EFFEDF2F845B308 /* UIImage+Compare.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIImage+Compare.h"; path = "FBSnapshotTestCase/Categories/UIImage+Compare.h"; sourceTree = "<group>"; };
 		46563E2717DFBABB817A16960357A79C /* Pods-FOTokenText_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-FOTokenText_Example.release.xcconfig"; sourceTree = "<group>"; };
 		4C3A69191DB5242400BB16D2 /* FOTokenTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FOTokenTextField.swift; sourceTree = "<group>"; };
-		4C3A69261DB54C6900BB16D2 /* delete_followup.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delete_followup.png; sourceTree = "<group>"; };
-		4C3A69271DB54C6900BB16D2 /* delete_followup@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete_followup@2x.png"; sourceTree = "<group>"; };
-		4C3A69281DB54C6900BB16D2 /* delete_followup@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete_followup@3x.png"; sourceTree = "<group>"; };
+		4C3A692F1DB552A100BB16D2 /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delete.png; sourceTree = "<group>"; };
+		4C3A69301DB552A100BB16D2 /* delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete@2x.png"; sourceTree = "<group>"; };
+		4C3A69311DB552A100BB16D2 /* delete@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete@3x.png"; sourceTree = "<group>"; };
 		4C6D73111DB1F1AC00680BC3 /* FOTokenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FOTokenView.swift; sourceTree = "<group>"; };
 		4C6D73141DB1F1E000680BC3 /* FOTokenTextView+Delegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FOTokenTextView+Delegates.swift"; sourceTree = "<group>"; };
 		4CA6279A1D37CFEF00D19B67 /* FOTokenTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FOTokenTextView.swift; sourceTree = "<group>"; };
@@ -294,9 +294,9 @@
 				4C3A69191DB5242400BB16D2 /* FOTokenTextField.swift */,
 				4C6D73141DB1F1E000680BC3 /* FOTokenTextView+Delegates.swift */,
 				4C6D73111DB1F1AC00680BC3 /* FOTokenView.swift */,
-				4C3A69261DB54C6900BB16D2 /* delete_followup.png */,
-				4C3A69271DB54C6900BB16D2 /* delete_followup@2x.png */,
-				4C3A69281DB54C6900BB16D2 /* delete_followup@3x.png */,
+				4C3A692F1DB552A100BB16D2 /* delete.png */,
+				4C3A69301DB552A100BB16D2 /* delete@2x.png */,
+				4C3A69311DB552A100BB16D2 /* delete@3x.png */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
