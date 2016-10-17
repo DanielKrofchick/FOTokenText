@@ -42,7 +42,7 @@ public class FOTokenTextField: UIView {
     
     func createClearButton() -> UIButton {
         let button = UIButton(type: .System)
-        button.setImage(UIImage(named: "delete.png")?.imageWithRenderingMode(.AlwaysOriginal), forState: .Normal)
+        button.setImage(UIImage(named: "FOToken_delete.png")?.imageWithRenderingMode(.AlwaysOriginal), forState: .Normal)
         button.contentEdgeInsets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 0)
     
         return button
