@@ -11,16 +11,23 @@ import FOTokenText
 
 class ViewController: UIViewController {
     
-    let textView = FOTokenTextView()
+    let textView = FOTokenTextField()
     let EI = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        textView.layer.borderColor = UIColor.greenColor().CGColor
-        textView.layer.borderWidth = 1
-        textView.debug = true
-        textView.tokenDelegate = self
+        let leftView = UILabel()
+        leftView.textColor = UIColor.orangeColor()
+        leftView.text = NSLocalizedString("To", comment: "Search field") + ": "
+        leftView.font = UIFont.systemFontOfSize(15)
+        
+        textView.textView.layer.borderColor = UIColor.greenColor().CGColor
+        textView.textView.layer.borderWidth = 1
+        textView.textView.debug = true
+        textView.textView.tokenDelegate = self
+        textView.leftView = leftView
+        textView.clearEnabled = true
         view.addSubview(textView)
         
         NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: textView, queue: .mainQueue()) {
@@ -36,8 +43,6 @@ class ViewController: UIViewController {
         
         let textW = view.frame.width - EI.left - EI.right
         let textS = textView.sizeThatFits(CGSize(width: textW, height: CGFloat.max))
-        
-        print(textS)
         
         textView.frame = CGRect(x: EI.left, y: EI.top, width: textW, height: textS.height)
     }
