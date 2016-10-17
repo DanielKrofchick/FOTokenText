@@ -29,11 +29,11 @@ TODO: Add long description of the pod here.
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'
-  s.source_files = 'FOTokenText/Classes/**/*.{m,h,mm,hpp,cpp,c,swift,xcassets}'
+  s.source_files = 'FOTokenText/Classes/**/*.{m,h,mm,hpp,cpp,c,swift,png}'
   
-  s.resource_bundles = {
-    'FOTokenText' => ['FOTokenText/Assets/*.png']
-  }
+# s.resource_bundles = {
+#  'FOTokenText' => ['FOTokenText/Assets/*.png']
+# }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
