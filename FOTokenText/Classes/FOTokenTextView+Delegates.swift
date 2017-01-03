@@ -8,7 +8,7 @@
 
 extension FOTokenTextView: UITextViewDelegate {
     
-    public func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
             var should = true
             
@@ -45,21 +45,21 @@ extension FOTokenTextView: UITextViewDelegate {
         return true
     }
     
-    public func textViewDidChange(textView: UITextView) {
+    public func textViewDidChange(_ textView: UITextView) {
         if debug {
             setNeedsDisplay()
         }
     }
     
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
-        scrollView.contentOffset = CGPointZero
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollView.contentOffset = CGPoint.zero
     }
     
 }
 
 extension FOTokenTextView: NSLayoutManagerDelegate {
     
-    public func layoutManager(layoutManager: NSLayoutManager, lineSpacingAfterGlyphAtIndex glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
+    public func layoutManager(_ layoutManager: NSLayoutManager, lineSpacingAfterGlyphAt glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
         return heightOffset()
     }
     

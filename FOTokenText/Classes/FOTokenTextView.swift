@@ -9,29 +9,29 @@
 import Foundation
 
 public protocol FOTokenTextViewProtocol {
-    func newToken(textView: FOTokenTextView, text: String) -> FOTokenView
-    func didRemove(token: FOTokenView)
-    func didAdd(token: FOTokenView)
-    func shouldRemoveOnDelete(token: FOTokenView) -> Bool
-    func shouldAddOnReturn(text: String) -> Bool
+    func newToken(_ textView: FOTokenTextView, text: String) -> FOTokenView
+    func didRemove(_ token: FOTokenView)
+    func didAdd(_ token: FOTokenView)
+    func shouldRemoveOnDelete(_ token: FOTokenView) -> Bool
+    func shouldAddOnReturn(_ text: String) -> Bool
 }
 
-public class FOTokenTextView: UITextView {
+open class FOTokenTextView: UITextView {
     
     var tokens = [FOTokenView]()
     var _tokenHeight = CGFloat(0)
     var tokenHeight: CGFloat {
         get {
             if _tokenHeight == 0 {
-                _tokenHeight = newToken("").sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max)).height
+                _tokenHeight = newToken("").sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)).height
             }
             
             return _tokenHeight
         }
     }
-    public var tokenEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-    public var debug = false
-    public var tokenDelegate: FOTokenTextViewProtocol? = nil
+    open var tokenEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+    open var debug = false
+    open var tokenDelegate: FOTokenTextViewProtocol? = nil
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -48,22 +48,22 @@ public class FOTokenTextView: UITextView {
         
     func doDelete() {
         if let token = tokens.last {
-            if token.selected {
+            if token.isSelected {
                 _removeToken(token)
             } else  {
-                token.selected = true
+                token.isSelected = true
             }
         }
     }
     
-    public func addToken(text: String, animated: Bool = false) {
+    open func addToken(_ text: String, animated: Bool = false) {
         let token = newToken(text)
         token.alpha = 0
         tokens.append(token)
         addSubview(token)
         
         setNeedsLayout()
-        UIView.animateWithDuration(animated ? 0.2 : 0, animations: {
+        UIView.animate(withDuration: animated ? 0.2 : 0, animations: {
             self.layoutIfNeeded()
         }, completion: { (finished) in
             token.alpha = 1
@@ -74,11 +74,11 @@ public class FOTokenTextView: UITextView {
         })
     }
     
-    public func removeToken(identifier: String, animated: Bool) {
+    open func removeToken(_ identifier: String, animated: Bool) {
         tokens.filter({$0.identifier == identifier}).forEach({_removeToken($0, animated: animated)})
     }
     
-    func newToken(text: String) -> FOTokenView {
+    func newToken(_ text: String) -> FOTokenView {
         if let tokenDelegate = tokenDelegate {
             let token = tokenDelegate.newToken(self, text: text)
             token.textView = self
@@ -89,8 +89,8 @@ public class FOTokenTextView: UITextView {
             
             return token
         } else {
-            let token = FOTokenView(type: .System)
-            token.setTitle(text, forState: .Normal)
+            let token = FOTokenView(type: .system)
+            token.setTitle(text, for: UIControlState())
             token.titleLabel?.font = font
             token.textView = self
             token.identifier = text
@@ -99,13 +99,13 @@ public class FOTokenTextView: UITextView {
         }
     }
     
-    func _removeToken(token: FOTokenView, animated: Bool = true) {
-        if let index = tokens.indexOf(token) {
+    func _removeToken(_ token: FOTokenView, animated: Bool = true) {
+        if let index = tokens.index(of: token) {
             token.removeFromSuperview()
-            tokens.removeAtIndex(index)
+            tokens.remove(at: index)
             
             setNeedsLayout()
-            UIView.animateWithDuration(animated ? 0.2 : 0, animations: {
+            UIView.animate(withDuration: animated ? 0.2 : 0, animations: {
                 self.layoutIfNeeded()
             }, completion: { (finished) in
                 self.tokenDelegate?.didRemove(token)
@@ -116,7 +116,7 @@ public class FOTokenTextView: UITextView {
         }
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         layoutTokens()
         
         let (paths, inset) = tokenExlusions()
@@ -126,7 +126,7 @@ public class FOTokenTextView: UITextView {
         super.layoutSubviews()
     }
     
-    public override func sizeThatFits(size: CGSize) -> CGSize {
+    open override func sizeThatFits(_ size: CGSize) -> CGSize {
         var s = super.sizeThatFits(size)
 
         if !text.isEmpty {
@@ -141,8 +141,8 @@ public class FOTokenTextView: UITextView {
     func layoutTokens() {
         var p = CGPoint(x: 0, y: tokenEdgeInsets.top)
         
-        for (index, token) in tokens.enumerate() {
-            var s = token.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
+        for (index, token) in tokens.enumerated() {
+            var s = token.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
             
             // New line
             if p.x + s.width + tokenEdgeInsets.left + tokenEdgeInsets.right >= frame.width && index != 0 {
@@ -167,9 +167,9 @@ public class FOTokenTextView: UITextView {
     // https://openradar.appspot.com/15761045
     func tokenExlusions() -> ([UIBezierPath], CGFloat) {
         var tRect = CGRect(x: 0, y: 0, width: frame.width, height: tokenEdgeInsets.top)
-        var bRect = CGRectZero
+        var bRect = CGRect.zero
         
-        for (index, token) in tokens.enumerate() {
+        for (index, token) in tokens.enumerated() {
             if index == 0 {
                 // First
                 tRect = CGRect(x: 0, y: 0, width: frame.width, height: token.frame.minY)
@@ -180,7 +180,7 @@ public class FOTokenTextView: UITextView {
                 bRect = CGRect(x: 0, y: token.frame.minY, width: token.frame.maxX + tokenEdgeInsets.left, height: token.frame.height)
             } else {
                 // Same line
-                let tokenSize = token.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
+                let tokenSize = token.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
                 
                 if token.frame.maxX + tokenSize.width >= frame.width {
                     bRect = CGRect(x: 0, y: token.frame.minY, width: frame.width, height: token.frame.height)
@@ -193,20 +193,20 @@ public class FOTokenTextView: UITextView {
         let path = UIBezierPath()
         path.lineWidth = 4
 
-        path.moveToPoint(CGPointZero)
+        path.move(to: CGPoint.zero)
 
-        if tRect == CGRectZero {
-            path.addLineToPoint(CGPoint(x: bRect.maxX, y: 0))
-            path.addLineToPoint(CGPoint(x: bRect.maxX, y: bRect.maxY))
+        if tRect == CGRect.zero {
+            path.addLine(to: CGPoint(x: bRect.maxX, y: 0))
+            path.addLine(to: CGPoint(x: bRect.maxX, y: bRect.maxY))
         } else {
-            path.addLineToPoint(CGPoint(x: tRect.maxX, y: 0))
-            path.addLineToPoint(CGPoint(x: tRect.maxX, y: tRect.maxY))
-            path.addLineToPoint(CGPoint(x: bRect.maxX, y: tRect.maxY))
-            path.addLineToPoint(CGPoint(x: bRect.maxX, y: bRect.maxY))
+            path.addLine(to: CGPoint(x: tRect.maxX, y: 0))
+            path.addLine(to: CGPoint(x: tRect.maxX, y: tRect.maxY))
+            path.addLine(to: CGPoint(x: bRect.maxX, y: tRect.maxY))
+            path.addLine(to: CGPoint(x: bRect.maxX, y: bRect.maxY))
         }
         
-        path.addLineToPoint(CGPoint(x: 0, y: bRect.maxY))
-        path.addLineToPoint(CGPointZero)
+        path.addLine(to: CGPoint(x: 0, y: bRect.maxY))
+        path.addLine(to: CGPoint.zero)
         
         var inset = tRect.maxY
         
@@ -221,11 +221,11 @@ public class FOTokenTextView: UITextView {
         return ([path], inset)
     }
     
-    public override func drawRect(rect: CGRect) {
-        super.drawRect(rect)
+    open override func draw(_ rect: CGRect) {
+        super.draw(rect)
         
         if debug {
-            UIColor.blueColor().set()
+            UIColor.blue.set()
             
             let (paths, inset) = tokenExlusions()
             
@@ -234,14 +234,14 @@ public class FOTokenTextView: UITextView {
             }
             
             if let c = UIGraphicsGetCurrentContext() {
-                let contentRect = CGRect(origin: CGPointZero, size: contentSize)
-                CGContextSetStrokeColorWithColor(c, UIColor.redColor().CGColor)
-                CGContextStrokeRect(c, contentRect)
+                let contentRect = CGRect(origin: CGPoint.zero, size: contentSize)
+                c.setStrokeColor(UIColor.red.cgColor)
+                c.stroke(contentRect)
             }
         }
     }
     
-    public override var contentSize: CGSize {
+    open override var contentSize: CGSize {
         get {
             var s = super.contentSize
             
@@ -266,8 +266,8 @@ public class FOTokenTextView: UITextView {
         return h
     }
     
-    public override func caretRectForPosition(position: UITextPosition) -> CGRect {
-        var rect = super.caretRectForPosition(position)
+    open override func caretRect(for position: UITextPosition) -> CGRect {
+        var rect = super.caretRect(for: position)
         
         if let font = font {
             rect.size.height = font.lineHeight + 1.666666
@@ -278,16 +278,16 @@ public class FOTokenTextView: UITextView {
     
     func clearSelectedToken() {
         for token in tokens {
-            if token.selected {
-                token.selected = false
+            if token.isSelected {
+                token.isSelected = false
             }
         }
     }
     
     // Disable magnifying glass. Interferes with tokens.
-    public override func addGestureRecognizer(gestureRecognizer: UIGestureRecognizer) {
+    open override func addGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
         if gestureRecognizer is UILongPressGestureRecognizer {
-            gestureRecognizer.enabled = false
+            gestureRecognizer.isEnabled = false
         }
         
         super.addGestureRecognizer(gestureRecognizer)

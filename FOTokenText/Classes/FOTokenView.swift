@@ -6,36 +6,36 @@
 //
 //
 
-public class FOTokenView: UIButton {
+open class FOTokenView: UIButton {
     
-    public weak var textView: FOTokenTextView? = nil
-    public var identifier = ""
+    open weak var textView: FOTokenTextView? = nil
+    open var identifier = ""
     
     public required override init(frame: CGRect) {
         super.init(frame: frame)
         
         layer.cornerRadius = 10
         layer.borderWidth = 2
-        layer.borderColor = UIColor.orangeColor().CGColor
+        layer.borderColor = UIColor.orange.cgColor
         layer.masksToBounds = true
         
-        setTitleColor(UIColor.brownColor(), forState: .Normal)
+        setTitleColor(UIColor.brown, for: UIControlState())
         
-        setBackgroundImage(UIImage(color: UIColor.lightGrayColor()), forState: .Normal)
-        setBackgroundImage(UIImage(color: UIColor.blueColor()), forState: .Selected)
-        setBackgroundImage(UIImage(color: UIColor.blueColor()), forState: [.Selected, .Highlighted])
+        setBackgroundImage(UIImage(color: UIColor.lightGray), for: UIControlState())
+        setBackgroundImage(UIImage(color: UIColor.blue), for: .selected)
+        setBackgroundImage(UIImage(color: UIColor.blue), for: [.selected, .highlighted])
         
         contentEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
         
-        addTarget(self, action: #selector(touchUpInside), forControlEvents: .TouchUpInside)
+        addTarget(self, action: #selector(touchUpInside), for: .touchUpInside)
     }
     
     func touchUpInside() {
-        if selected {
+        if isSelected {
             textView?._removeToken(self)
         } else {
             textView?.clearSelectedToken()
-            selected = true
+            isSelected = true
         }
     }
     
@@ -53,16 +53,16 @@ extension UIImage {
         var image: UIImage? = nil
         
         if let c = UIGraphicsGetCurrentContext() {
-            let rect = CGRect(origin: CGPointZero, size: size)
+            let rect = CGRect(origin: CGPoint.zero, size: size)
             
-            CGContextSetFillColorWithColor(c, color.CGColor)
-            CGContextFillRect(c, rect)
+            c.setFillColor(color.cgColor)
+            c.fill(rect)
             
             image = UIGraphicsGetImageFromCurrentImageContext()
         }
         
-        if let i = image?.CGImage {
-            self.init(CGImage: i)
+        if let i = image?.cgImage {
+            self.init(cgImage: i)
         } else {
             self.init()
         }

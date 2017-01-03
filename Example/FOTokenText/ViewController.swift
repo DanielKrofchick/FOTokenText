@@ -18,20 +18,20 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         let leftView = UILabel()
-        leftView.textColor = UIColor.orangeColor()
+        leftView.textColor = UIColor.orange
         leftView.text = NSLocalizedString("To", comment: "Search field") + ": "
-        leftView.font = UIFont.systemFontOfSize(15)
+        leftView.font = UIFont.systemFont(ofSize: 15)
         
-        textView.textView.layer.borderColor = UIColor.greenColor().CGColor
+        textView.textView.layer.borderColor = UIColor.green.cgColor
         textView.textView.layer.borderWidth = 1
         textView.textView.debug = true
         textView.textView.tokenDelegate = self
         textView.leftView = leftView
-        textView.clearButtonMode = .WhileEditing
-        textView.clearButton?.addTarget(self, action: #selector(clearTap), forControlEvents: .TouchUpInside)
+        textView.clearButtonMode = .whileEditing
+        textView.clearButton?.addTarget(self, action: #selector(clearTap), for: .touchUpInside)
         view.addSubview(textView)
         
-        NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: textView, queue: .mainQueue()) {
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: textView, queue: .main) {
             [weak self] note in
             if let this = self {
                 this.view.setNeedsLayout()
@@ -48,7 +48,7 @@ class ViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         let textW = view.frame.width - EI.left - EI.right
-        let textS = textView.sizeThatFits(CGSize(width: textW, height: CGFloat.max))
+        let textS = textView.sizeThatFits(CGSize(width: textW, height: CGFloat.greatestFiniteMagnitude))
         
         textView.frame = CGRect(x: EI.left, y: EI.top, width: textW, height: textS.height)
     }
@@ -57,29 +57,29 @@ class ViewController: UIViewController {
 
 extension ViewController: FOTokenTextViewProtocol {
     
-    func newToken(textView: FOTokenTextView, text: String) -> FOTokenView {
-        let token = FOTokenView(type: .System)
-        token.setTitle(text, forState: .Normal)
+    func newToken(_ textView: FOTokenTextView, text: String) -> FOTokenView {
+        let token = FOTokenView(type: .system)
+        token.setTitle(text, for: UIControlState())
         token.titleLabel?.font = textView.font
         
         return token
     }
     
-    func didAdd(token: FOTokenView) {
+    func didAdd(_ token: FOTokenView) {
         view.setNeedsLayout()
         view.layoutIfNeeded()
     }
     
-    func didRemove(token: FOTokenView) {
+    func didRemove(_ token: FOTokenView) {
         view.setNeedsLayout()
         view.layoutIfNeeded()
     }
     
-    func shouldAddOnReturn(text: String) -> Bool {
+    func shouldAddOnReturn(_ text: String) -> Bool {
         return true
     }
     
-    func shouldRemoveOnDelete(token: FOTokenView) -> Bool {
+    func shouldRemoveOnDelete(_ token: FOTokenView) -> Bool {
         return true
     }
     
@@ -92,14 +92,14 @@ class FOCustomToken: FOTokenView {
         
         layer.cornerRadius = 4
         layer.borderWidth = 1
-        layer.borderColor = UIColor.purpleColor().CGColor
+        layer.borderColor = UIColor.purple.cgColor
         layer.masksToBounds = true
         
-        setTitleColor(UIColor.brownColor(), forState: .Normal)
+        setTitleColor(UIColor.brown, for: UIControlState())
         
-        setBackgroundImage(UIImage(color: UIColor.yellowColor()), forState: .Normal)
-        setBackgroundImage(UIImage(color: UIColor.greenColor()), forState: .Selected)
-        setBackgroundImage(UIImage(color: UIColor.greenColor()), forState: [.Selected, .Highlighted])
+        setBackgroundImage(UIImage(color: UIColor.yellow), for: UIControlState())
+        setBackgroundImage(UIImage(color: UIColor.green), for: .selected)
+        setBackgroundImage(UIImage(color: UIColor.green), for: [.selected, .highlighted])
         
         contentEdgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
     }
@@ -118,16 +118,16 @@ extension UIImage {
         var image: UIImage? = nil
         
         if let c = UIGraphicsGetCurrentContext() {
-            let rect = CGRect(origin: CGPointZero, size: size)
+            let rect = CGRect(origin: CGPoint.zero, size: size)
             
-            CGContextSetFillColorWithColor(c, color.CGColor)
-            CGContextFillRect(c, rect)
+            c.setFillColor(color.cgColor)
+            c.fill(rect)
             
             image = UIGraphicsGetImageFromCurrentImageContext()
         }
         
-        if let i = image?.CGImage {
-            self.init(CGImage: i)
+        if let i = image?.cgImage {
+            self.init(cgImage: i)
         } else {
             self.init()
         }
