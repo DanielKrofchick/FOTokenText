@@ -227,7 +227,7 @@ open class FOTokenTextView: UITextView {
         if debug {
             UIColor.blue.set()
             
-            let (paths, inset) = tokenExlusions()
+            let (paths, _) = tokenExlusions()
             
             for path in paths {
                 path.stroke()
