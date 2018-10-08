@@ -1,6 +1,6 @@
 {
   "name": "FOTokenText",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "summary": "A short description of FOTokenText.",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/<GITHUB_USERNAME>/FOTokenText",
@@ -13,10 +13,10 @@
   },
   "source": {
     "git": "https://github.com/<GITHUB_USERNAME>/FOTokenText.git",
-    "tag": "0.1.0"
+    "tag": "0.2.0"
   },
   "platforms": {
     "ios": "8.0"
   },
-  "source_files": "FOTokenText/Classes/**/*"
+  "source_files": "FOTokenText/Classes/**/*.{m,h,mm,hpp,cpp,c,swift,png}"
 }

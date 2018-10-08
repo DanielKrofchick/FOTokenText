@@ -12,26 +12,24 @@ import FOTokenText
 class ViewController: UIViewController {
     
     let textView = FOTokenTextField()
-    let EI = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+    let EI = UIEdgeInsets(top: 100, left: 20, bottom: 20, right: 20)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let leftView = UILabel()
-        leftView.textColor = UIColor.orange
+        leftView.textColor = UIColor.black
         leftView.text = NSLocalizedString("To", comment: "Search field") + ": "
         leftView.font = UIFont.systemFont(ofSize: 15)
         
-        textView.textView.layer.borderColor = UIColor.green.cgColor
-        textView.textView.layer.borderWidth = 1
-        textView.textView.debug = true
+        textView.textView.font = UIFont.systemFont(ofSize: 15)
         textView.textView.tokenDelegate = self
         textView.leftView = leftView
         textView.clearButtonMode = .whileEditing
         textView.clearButton?.addTarget(self, action: #selector(clearTap), for: .touchUpInside)
         view.addSubview(textView)
         
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: textView, queue: .main) {
+        NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: textView, queue: .main) {
             [weak self] note in
             if let this = self {
                 this.view.setNeedsLayout()
@@ -39,7 +37,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func clearTap() {
+    @objc func clearTap() {
         textView.textView.text = nil
         textView.setNeedsLayout()
     }
@@ -59,7 +57,7 @@ extension ViewController: FOTokenTextViewProtocol {
     
     func newToken(_ textView: FOTokenTextView, text: String) -> FOTokenView {
         let token = FOTokenView(type: .system)
-        token.setTitle(text, for: UIControlState())
+        token.setTitle(text, for: .normal)
         token.titleLabel?.font = textView.font
         
         return token
@@ -73,64 +71,6 @@ extension ViewController: FOTokenTextViewProtocol {
     func didRemove(_ token: FOTokenView) {
         view.setNeedsLayout()
         view.layoutIfNeeded()
-    }
-    
-    func shouldAddOnReturn(_ text: String) -> Bool {
-        return true
-    }
-    
-    func shouldRemoveOnDelete(_ token: FOTokenView) -> Bool {
-        return true
-    }
-    
-}
-
-class FOCustomToken: FOTokenView {
-    
-    required init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        layer.cornerRadius = 4
-        layer.borderWidth = 1
-        layer.borderColor = UIColor.purple.cgColor
-        layer.masksToBounds = true
-        
-        setTitleColor(UIColor.brown, for: UIControlState())
-        
-        setBackgroundImage(UIImage(color: UIColor.yellow), for: UIControlState())
-        setBackgroundImage(UIImage(color: UIColor.green), for: .selected)
-        setBackgroundImage(UIImage(color: UIColor.green), for: [.selected, .highlighted])
-        
-        contentEdgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-}
-
-extension UIImage {
-    
-    convenience init(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
-        UIGraphicsBeginImageContext(size)
-        
-        var image: UIImage? = nil
-        
-        if let c = UIGraphicsGetCurrentContext() {
-            let rect = CGRect(origin: CGPoint.zero, size: size)
-            
-            c.setFillColor(color.cgColor)
-            c.fill(rect)
-            
-            image = UIGraphicsGetImageFromCurrentImageContext()
-        }
-        
-        if let i = image?.cgImage {
-            self.init(cgImage: i)
-        } else {
-            self.init()
-        }
     }
     
 }

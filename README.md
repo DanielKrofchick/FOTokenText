@@ -1,15 +1,27 @@
 # FOTokenText
 
-[![CI Status](http://img.shields.io/travis/Daniel Krofchick/FOTokenText.svg?style=flat)](https://travis-ci.org/Daniel Krofchick/FOTokenText)
-[![Version](https://img.shields.io/cocoapods/v/FOTokenText.svg?style=flat)](http://cocoapods.org/pods/FOTokenText)
-[![License](https://img.shields.io/cocoapods/l/FOTokenText.svg?style=flat)](http://cocoapods.org/pods/FOTokenText)
-[![Platform](https://img.shields.io/cocoapods/p/FOTokenText.svg?style=flat)](http://cocoapods.org/pods/FOTokenText)
+A UITextView and UITextField that supports token buttons, like those found in Mail.
+
+Initialize an FOTextView
+```swift
+let textView = FOTokenTextView(frame: CGRect.zero)
+textView.tokenDelegate = self
+```
+and implement the required `FOTokenTextViewProtocol` method `newToken:textView:text`
+```swift
+func newToken(_ textView: FOTokenTextView, text: String) -> FOTokenView {
+  let token = FOTokenView(type: .system)
+  token.setTitle(text, for: .normal)
+  token.titleLabel?.font = textView.font
+
+  return token
+}
+```
+![Example](ExampleImage.png)
 
 ## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
-
-## Requirements
+Try the example project in the `FOTokenText_Example` target.
 
 ## Installation
 
@@ -17,7 +29,7 @@ FOTokenText is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod "FOTokenText"
+pod 'FOPopup', :git => 'https://github.com/DanielKrofchick/FOTokenText.git'
 ```
 
 ## Author

@@ -1,23 +1,16 @@
 PODS:
-  - FBSnapshotTestCase (2.1.2):
-    - FBSnapshotTestCase/SwiftSupport (= 2.1.2)
-  - FBSnapshotTestCase/Core (2.1.2)
-  - FBSnapshotTestCase/SwiftSupport (2.1.2):
-    - FBSnapshotTestCase/Core
-  - FOTokenText (0.1.0)
+  - FOTokenText (0.2.0)
 
 DEPENDENCIES:
-  - FBSnapshotTestCase
   - FOTokenText (from `../`)
 
 EXTERNAL SOURCES:
   FOTokenText:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
-  FBSnapshotTestCase: 918c55861356ee83aee7843d759f55a18ff6982b
-  FOTokenText: 5ff9dadd86681b45cef26b8df32756e697a59edc
+  FOTokenText: 66c7f975fb5a7c02c1bb9557b5b2c3000b1c3a39
 
-PODFILE CHECKSUM: ff9a9b8a1b9b29f8831860d1c7158113080abd87
+PODFILE CHECKSUM: 30903496c6a134435b01bb8a6536af0f8428756f
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.3.1

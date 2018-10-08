@@ -7,14 +7,7 @@
 //
 
 import Foundation
-
-public protocol FOTokenTextViewProtocol {
-    func newToken(_ textView: FOTokenTextView, text: String) -> FOTokenView
-    func didRemove(_ token: FOTokenView)
-    func didAdd(_ token: FOTokenView)
-    func shouldRemoveOnDelete(_ token: FOTokenView) -> Bool
-    func shouldAddOnReturn(_ text: String) -> Bool
-}
+import UIKit
 
 open class FOTokenTextView: UITextView {
     
@@ -90,7 +83,7 @@ open class FOTokenTextView: UITextView {
             return token
         } else {
             let token = FOTokenView(type: .system)
-            token.setTitle(text, for: UIControlState())
+            token.setTitle(text, for: UIControl.State())
             token.titleLabel?.font = font
             token.textView = self
             token.identifier = text
@@ -121,7 +114,7 @@ open class FOTokenTextView: UITextView {
         
         let (paths, inset) = tokenExlusions()
         textContainer.exclusionPaths = paths
-        textContainerInset = UIEdgeInsetsMake(inset, 0, 0, 0)
+        textContainerInset = UIEdgeInsets.init(top: inset, left: 0, bottom: 0, right: 0)
         
         super.layoutSubviews()
     }

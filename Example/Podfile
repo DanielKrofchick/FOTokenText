@@ -5,7 +5,5 @@ target 'FOTokenText_Example' do
 
   target 'FOTokenText_Tests' do
     inherit! :search_paths
-
-    pod 'FBSnapshotTestCase'
   end
 end

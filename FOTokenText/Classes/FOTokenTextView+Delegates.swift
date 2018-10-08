@@ -6,6 +6,8 @@
 //
 //
 
+import UIKit
+
 extension FOTokenTextView: UITextViewDelegate {
     
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -24,7 +26,7 @@ extension FOTokenTextView: UITextViewDelegate {
             return false
         }
         
-        if text.characters.count == 0 && textView.text.characters.count == 0 {
+        if text.count == 0 && textView.text.count == 0 {
             var should = true
             
             if let token = tokens.last {

@@ -6,6 +6,8 @@
 //
 //
 
+import UIKit
+
 open class FOTokenView: UIButton {
     
     open weak var textView: FOTokenTextView? = nil
@@ -14,23 +16,23 @@ open class FOTokenView: UIButton {
     public required override init(frame: CGRect) {
         super.init(frame: frame)
         
-        layer.cornerRadius = 10
-        layer.borderWidth = 2
-        layer.borderColor = UIColor.orange.cgColor
+        layer.cornerRadius = 5
+        layer.borderWidth =  1.0 / UIScreen.main.scale
+        layer.borderColor = UIColor.lightGray.cgColor
         layer.masksToBounds = true
         
-        setTitleColor(UIColor.brown, for: UIControlState())
+        setTitleColor(UIColor.black, for: .normal)
         
-        setBackgroundImage(UIImage(color: UIColor.lightGray), for: UIControlState())
-        setBackgroundImage(UIImage(color: UIColor.blue), for: .selected)
-        setBackgroundImage(UIImage(color: UIColor.blue), for: [.selected, .highlighted])
+        setBackgroundImage(UIImage(color: UIColor(red: 0.827, green: 0.906, blue: 920, alpha: 1)), for: .normal)
+        setBackgroundImage(UIImage(color: UIColor(red: 0.435, green: 0.690, blue: 0.937, alpha: 1)), for: .selected)
+        setBackgroundImage(UIImage(color: UIColor(red: 0.435, green: 0.690, blue: 0.937, alpha: 1)), for: [.selected, .highlighted])
         
         contentEdgeInsets = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
         
         addTarget(self, action: #selector(touchUpInside), for: .touchUpInside)
     }
     
-    func touchUpInside() {
+    @objc func touchUpInside() {
         if isSelected {
             textView?._removeToken(self)
         } else {
