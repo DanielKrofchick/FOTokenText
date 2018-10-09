@@ -1,6 +1,6 @@
 # FOTokenText
 
-A UITextView and UITextField that supports token buttons, like those found in Mail.
+A UITextView and UITextField that supports token buttons, like those found in Mail. The tokens can be tappend on like buttons, and deleted.
 
 Initialize an FOTextView
 ```swift
